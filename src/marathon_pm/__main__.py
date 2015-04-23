@@ -12,8 +12,8 @@ CREATE = u'create'
 UPDATE = u'update'
 
 ACTIONS_DICT = {
-   NGINX: {CREATE: CreateNginxConfCommand(), UPDATE: UpdateNginxConfCommand()},
-   HAPROXY: {CREATE: CreateHAProxyConfCommand(), UPDATE: UpdateHAProxyConfCommand()}
+   NGINX: {CREATE: CreateNginxConfCommand, UPDATE: UpdateNginxConfCommand},
+   HAPROXY: {CREATE: CreateHAProxyConfCommand, UPDATE: UpdateHAProxyConfCommand}
 }
 
 
@@ -21,12 +21,21 @@ def main():
     parser = argparse.ArgumentParser(description='Manage nginx and haproxy configuration for marathon mesos.')
     parser.add_argument(u'server_type', choices=[NGINX, HAPROXY])
     parser.add_argument(u'action', choices=[CREATE, UPDATE])
-    parser.add_argument(u'output-dir', nargs='?', default=u"dupa")
-    args = parser.parse_args()
-    kwargs = dict(args._get_kwargs())
-    server_type = kwargs.pop(u'server_type')
-    action_name = kwargs.pop(u'action')
-    action = ACTIONS_DICT.get(server_type).get(action_name)
+    parser.add_argument(u'--conf-dir', nargs='?', default=None)
+    parser.add_argument(u'--output-dir', nargs='?', default=None)
+    parser.add_argument(u'--marathon-url', nargs='?', default=u'http://localhost:8080')
+    parser.add_argument(u'--domain', nargs='?', default=u'localhost')
+    parser.add_argument(u'--delete-unused', action='store_true', default=False)
+    ns, _ = parser.parse_known_args()
+    action_cls = ACTIONS_DICT.get(ns.server_type).get(ns.action)
+    kwargs = dict(
+        conf_dir=ns.conf_dir,
+        output_dir=ns.output_dir,
+        marathon_url=ns.marathon_url,
+        domain=ns.domain,
+        delete_unused=ns.delete_unused,
+    )
+    action = action_cls(**kwargs)
     return action(**kwargs)
 
 main()

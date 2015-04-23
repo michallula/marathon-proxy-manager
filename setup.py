@@ -22,5 +22,6 @@ setup(
     install_requires=[
         u'argparse',
         u'marathon',
+        u'jinja2'
     ]
 )
