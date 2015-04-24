@@ -1,3 +1,3 @@
 # marathon-proxy-manager
 
-proxy and load-balancing settings creation and updating automation for marathon mesos environment
+Nginx proxy and load-balancing settings management automation for marathon mesos environment.

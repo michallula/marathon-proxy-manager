@@ -1,4 +1,7 @@
-__author__ = 'michal'
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#  Copyright (c) 2015 Lingaro
 
 import os
 import subprocess
