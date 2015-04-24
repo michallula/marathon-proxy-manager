@@ -75,10 +75,10 @@ class MarathonProxyManagerCommand(object):
         return self._template
 
     def __init__(self, *args, **kwargs):
-        self._template_path = kwargs.get(u'template_path', None)
         self._marathon_url = kwargs.get(u'marathon_url', self.DEFAULT_MARATHON_URL)
         self._conf_dir = kwargs.get(u'conf_dir', self.DEFAULT_CONF_DIR) or self.DEFAULT_CONF_DIR
-        self._out_dir = kwargs.get(u'output_dir', self._conf_dir) or self._conf_dir
+        self._out_dir = kwargs.get(u'output_dir', self.DEFAULT_OUT_DIR) or self._conf_dir
+        self._template_path = kwargs.get(u'template_dir', self.DEFAULT_TEMPLATE_PATH)
         self._template_name = kwargs.get(u'template_name', self.DEFAULT_TEMPLATE_NAME)
         self._delete_unused = kwargs.get(u'delete_unused', self.DEFAULT_DELETE_UNUSED)
         self._reload = kwargs.get(u'reload', self.DEFAULT_RELOAD)
