@@ -6,7 +6,7 @@
 
 from setuptools import setup
 
-version = u'0.1.2'
+version = u'0.1.3'
 
 setup(
     name=u'marathon-proxy-manager',
