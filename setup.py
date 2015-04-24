@@ -18,7 +18,7 @@ setup(
     url=u'https://github.com/michallula/marathon-proxy-manager',
     download_url=u'https://github.com/michallula/marathon-proxy-manager/tarball/{version}'.format(version=version),
     keywords=[u'marathon', u'mesos', u'nginx', u'load-balancing', u'reverse proxy'],
-    package_dir={u'': u'src'},
+    package_dir={u'': 'src'},
     packages=[u'marathon_proxy_manager'],
     install_requires=[
         u'argparse',
