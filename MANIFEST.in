@@ -1,0 +1,3 @@
+include LICENSE
+include src/marathon_proxy_manager/templates/*.tmpl
+include marathon_proxy_manager/templates/*.tmpl

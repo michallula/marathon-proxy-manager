@@ -6,7 +6,7 @@
 
 from setuptools import setup
 
-version = u'0.1'
+version = u'0.1.1'
 
 setup(
     name=u'marathon-proxy-manager',
@@ -20,6 +20,8 @@ setup(
     keywords=[u'marathon', u'mesos', u'nginx', u'load-balancing', u'reverse proxy'],
     package_dir={'': 'src'},
     packages=['marathon_proxy_manager'],
+    package_data={'marathon_proxy_manager': ['marathon_proxy_manager/templates/*.tmpl']},
+    include_package_data=True,
     install_requires=[
         u'argparse',
         u'marathon',
