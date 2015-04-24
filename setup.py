@@ -16,9 +16,9 @@ setup(
     author_email=u'michal.lula@lingaro.com',
     url=u'https://github.com/michallula/marathon-proxy-manager',
     download_url=u'https://github.com/michallula/marathon-proxy-manager/tarball/{version}'.format(version=version),
-    keywords=['marathon', 'mesos', 'haproxy', 'nginx'],
+    keywords=['marathon', 'mesos', 'haproxy', 'nginx_2'],
     package_dir={u'': 'src'},
-    packages=['marathon_pm'],
+    packages=['marathon_proxy_manager'],
     install_requires=[
         u'argparse',
         u'marathon',
