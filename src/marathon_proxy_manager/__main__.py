@@ -26,7 +26,7 @@ def main():
                         )
     parser.add_argument(u'--template-name',
                         nargs=u'?',
-                        default=Cmd.DEFAULT_TEMPLATE_PATH,
+                        default=Cmd.DEFAULT_TEMPLATE_NAME,
                         help=u"name of template file, default is nginx.tmpl"
                         )
     parser.add_argument(u'--marathon-url',
