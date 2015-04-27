@@ -100,9 +100,10 @@ class MarathonProxyManagerCommand(object):
 
     def should_process(self, app_name):
         if self._apps:
-            return app_name in self._apps
-        if self._exclude:
+            return app_name in (set(self._apps) - set(self._exclude))
+        elif self._exclude:
             return app_name not in self._exclude
+        return True
 
     def apps_generator(self):
         all_tasks = self.get_tasks()
