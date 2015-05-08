@@ -22,6 +22,7 @@ class MarathonProxyManagerCommand(object):
     DEFAULT_DELETE_UNUSED = False
     DEFAULT_OVERRIDE = False
     DEFAULT_RELOAD = False
+    DEFAULT_GENERATE_FOR_SUSPENDED = False
     DEFAULT_APPS = ()
     DEFAULT_EXCLUDE = ()
 
@@ -85,20 +86,21 @@ class MarathonProxyManagerCommand(object):
         self._override = kwargs.get(u'override', self.DEFAULT_OVERRIDE)
         self._apps = tuple(kwargs.get(u'apps', self.DEFAULT_APPS))
         self._exclude = tuple(kwargs.get(u'exclude', self.DEFAULT_EXCLUDE))
+        self._generate_for_suspended = kwargs.get(u'generate_for_suspended', self.DEFAULT_GENERATE_FOR_SUSPENDED)
 
-    def get_tasks(self, group_by=None):
+    def get_tasks(self):
         return self.marathon_cli.list_tasks()
 
-    def group_tasks(self, tasks):
-        result = {}
-        for task in tasks:
-            app_name = task.app_id[1:]
-            if app_name not in result:
-                result[app_name] = []
-            result[app_name].append(task)
-        return result
+    def get_apps(self):
+        return self.marathon_cli.list_apps()
 
-    def should_process(self, app_name):
+    def group_tasks(self, apps, tasks):
+        return dict((app, [task for task in tasks if task.app_id == app.id]) for app in apps)
+
+    def should_process(self, app, tasks):
+        app_name = app.id[1:]
+        if not self._generate_for_suspended and not bool(tasks):
+            return False
         if self._apps:
             return app_name in (set(self._apps) - set(self._exclude))
         elif self._exclude:
@@ -106,14 +108,15 @@ class MarathonProxyManagerCommand(object):
         return True
 
     def apps_generator(self):
+        all_apps = self.get_apps()
         all_tasks = self.get_tasks()
-        grouped_tasks = self.group_tasks(all_tasks)
-        for app_name, tasks in grouped_tasks.iteritems():
-            if self.should_process(app_name):
-                yield (app_name, tasks)
+        grouped_tasks = self.group_tasks(all_apps, all_tasks)
+        for app, tasks in grouped_tasks.iteritems():
+            if self.should_process(app, tasks):
+                yield (app, tasks)
 
-    def render_conf(self, app_name, tasks, *args, **kwargs):
-        return self.template.render(app_name=app_name, tasks=tasks, **dict(*args, **kwargs))
+    def render_conf(self, app, tasks, *args, **kwargs):
+        return self.template.render(app=app, tasks=tasks, **dict(*args, **kwargs))
 
     def read_conf(self, app_name):
         file_path = os.path.join(self._conf_dir, u'sites-enabled', app_name)
@@ -151,8 +154,9 @@ class MarathonProxyManagerCommand(object):
     def __call__(self, *args, **kwargs):
         apps = ()
         modified = False
-        for app_name, tasks in self.apps_generator():
-            conf = self.render_conf(app_name, tasks, *args, **kwargs)
+        for app, tasks in self.apps_generator():
+            app_name = app.id[1:]
+            conf = self.render_conf(app, tasks, *args, **kwargs)
             old_conf = self.read_conf(app_name)
             apps += (app_name,)
             if self.should_override(app_name, conf, old_conf):

@@ -1,12 +1,10 @@
-
 upstream {{app.id[1:]}} {
     least_conn;{% for task in tasks %}
     {% for port in task.ports %}server {{task.host}}:{{port}};{% endfor %}{% endfor %}
 }
 
 server {
-    listen 80;
-    server_name {{app.id[1:]}}.{{domain}};
+    listen {{ app.container.docker.port_mappings[0].service_port }};
     location / {
         proxy_pass http://{{app.id[1:]}};
     }

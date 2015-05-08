@@ -60,6 +60,10 @@ def main():
                         type=str,
                         default=Cmd.DEFAULT_EXCLUDE,
                         help=u"application names list for which configuration shouldn't be generated")
+    parser.add_argument(u'--generate-for-suspended',
+                        action=u'store_true',
+                        default=Cmd.DEFAULT_GENERATE_FOR_SUSPENDED,
+                        help=u'indicates that configuration should be generated for suspended apps')
 
     ns, _ = parser.parse_known_args()
 
@@ -74,7 +78,8 @@ def main():
         override=ns.override,
         reload=ns.reload,
         apps=ns.apps,
-        exclude=ns.exclude
+        exclude=ns.exclude,
+        generate_for_suspended=ns.generate_for_suspended
     )
 
     action = Cmd(**kwargs)
